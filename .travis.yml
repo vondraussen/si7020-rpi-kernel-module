@@ -6,4 +6,6 @@ services:
 before_install:
   - docker pull ubuntu:xenial
   - docker run -d ubuntu /bin/bash -c "df -h; echo $(nproc);"
+  - df -h
+  - echo $(nproc)
   - docker ps -a
