@@ -15,4 +15,6 @@ before_install:
   - sudo apt install bison flex libssl-dev
   - cd linux && KERNEL=kernel7 make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bcm2709_defconfig
   # - KERNEL=kernel7 make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- oldconfig
-  - make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- modules
+  # - make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- modules
+  - make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- modules_prepare
+  - make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- M=drivers/iio/humidity/si7020
