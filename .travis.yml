@@ -14,7 +14,14 @@ before_install:
   - export PATH=$PATH:$PWD/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
   - sudo apt install bison flex libssl-dev
   - cd linux && KERNEL=kernel7 make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bcm2709_defconfig
-  # - KERNEL=kernel7 make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- oldconfig
-  # - make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- modules
   - make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- modules_prepare
-  - make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- M=drivers/iio/humidity/si7020
+  - CONFIG_SI7020=m make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- M=drivers/iio/humidity
+  - tar czvf si7020_module_raspberrypi-kernel_1.20190819-1.tar.gz drivers/iio/humidity/si7020.ko
+
+# deploy:
+#   provider: releases
+#   api_key: "GITHUB OAUTH TOKEN"
+#   file: "si7020_module_raspberrypi-kernel_1.20190819-1.tar.gz"
+#   skip_cleanup: true
+#   on:
+#     tags: true
