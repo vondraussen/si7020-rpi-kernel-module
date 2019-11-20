@@ -3,7 +3,7 @@ services:
   - docker
 
 install:
-  - sudo apt install bison flex libssl-dev
+  - sudo apt install bison flex libssl-dev python3 python3-pip
   - pip3 install PyGithub
   - export TRAVIS_TAG=$(/usr/bin/python3 check_pi_kernel_update.py)
   - echo "Will use ${TRAVIS_TAG}"
