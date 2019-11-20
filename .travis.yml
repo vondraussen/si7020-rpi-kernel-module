@@ -2,30 +2,36 @@ language: generic
 services:
   - docker
 
-before_install:
+install:
   - export TRAVIS_TAG=raspberrypi-kernel_1.20180924-1
+  - sudo apt install bison flex libssl-dev
   - git clone --depth 1 --branch ${TRAVIS_TAG} https://github.com/raspberrypi/linux.git
   - git clone --depth 1 https://github.com/raspberrypi/tools
   - export PATH=$PATH:$PWD/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
-  - sudo apt install bison flex libssl-dev
-  - cd linux && KERNEL=kernel7 make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
-    bcm2709_defconfig
-  - make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- modules_prepare
-  - CONFIG_SI7020=m make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- M=drivers/iio/humidity
-  - tar czvf si7020_module_${TRAVIS_TAG}.tar.gz drivers/iio/humidity/si7020.ko
-  - cd ..
 
-before_deploy:
-  - git config --local user.name "${GIT_USER_NAME}"
-  - git config --local user.email "${GIT_USER_EMAIL}"
-  - git tag ${TRAVIS_TAG}
+jobs:
+  include:
+    - name: RPI 2, 3, 3+
+      stage: RPI 2
+      install:
+        - cd linux && KERNEL=kernel7 make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
+          bcm2709_defconfig
+        - make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- modules_prepare
+        - CONFIG_SI7020=m make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- M=drivers/iio/humidity
+        - tar czvf si7020_module_rpi_2_3_3p_${TRAVIS_TAG}.tar.gz drivers/iio/humidity/si7020.ko
+        - cd ..
 
-deploy:
-  provider: releases
-  api_key:
-    secure: o7gsVhVgtxDNea+4u9JIZD4T/3vG/MK6jZRxYPMV4SwFxIc8sjSBgF8Eemm6Tl9ml3Tp/7bb7PIiNf3gyYFPYhmDU7OzgfbCEFfuCVp7vedN/HaomQ+bB3qv+7/+tx8Mbw6/fR9DoDgGLyKMMfUfcCmfkb+BHe5B/0wyZB4Li5WZ8TNLpB3Xq242iKGVFkQNPwk+ob3JEW9dz+oGtcsa9mI8YDmzqKS3v+ihA3NGGrzQB5hjHHKpPXVvyqUOLjLiwwni2v1501I9gWCgZqihifNDiFr3RaYnNZVU8mMDGK7kJt2psXKzpP6i3msqyxWcv14x4DfSBaN2UbQapFwUJQnZ6P7SfUrXOK9c05E7aaf5lFAA0pZNN8XHNhyqTvnsM7Yn0q5Zf9SgrcyHWjfIjmEgMIh6SdspWOF07WqiC9i1a8QQxt/S7Fy4cNGVUb34i72vFhOo+ScGTANDIzQ1yXOsUJZZeuLIS6E2y4yaLHlBKlScxf4f9Ltywd6fRCMQzKW1ogLvnOwoEvI+w8Ygd+0Ne/gjt7B9W1ok5ifqdtOhTjh3NwaFHSkhsFSr5VdrKOLFxiskzFHW6c99I2Bo1xnoIdOzNnT8qspnAG9CtBrJcmS9s7FH7LxzrBQonvqR1cRuT/mp5gx/FM0JGqHJFbIwocj0r3PxLGF7PrE8kzI=
-  edge: true
-  file: linux/si7020_module_${TRAVIS_TAG}.tar.gz
-  on:
-    repo: vondraussen/si7020-rpi-kernel-module
-  skip_cleanup: true
+      before_deploy:
+        - git config --local user.name "${GIT_USER_NAME}"
+        - git config --local user.email "${GIT_USER_EMAIL}"
+        - git tag ${TRAVIS_TAG}
+
+      deploy:
+        provider: releases
+        api_key:
+          secure: o7gsVhVgtxDNea+4u9JIZD4T/3vG/MK6jZRxYPMV4SwFxIc8sjSBgF8Eemm6Tl9ml3Tp/7bb7PIiNf3gyYFPYhmDU7OzgfbCEFfuCVp7vedN/HaomQ+bB3qv+7/+tx8Mbw6/fR9DoDgGLyKMMfUfcCmfkb+BHe5B/0wyZB4Li5WZ8TNLpB3Xq242iKGVFkQNPwk+ob3JEW9dz+oGtcsa9mI8YDmzqKS3v+ihA3NGGrzQB5hjHHKpPXVvyqUOLjLiwwni2v1501I9gWCgZqihifNDiFr3RaYnNZVU8mMDGK7kJt2psXKzpP6i3msqyxWcv14x4DfSBaN2UbQapFwUJQnZ6P7SfUrXOK9c05E7aaf5lFAA0pZNN8XHNhyqTvnsM7Yn0q5Zf9SgrcyHWjfIjmEgMIh6SdspWOF07WqiC9i1a8QQxt/S7Fy4cNGVUb34i72vFhOo+ScGTANDIzQ1yXOsUJZZeuLIS6E2y4yaLHlBKlScxf4f9Ltywd6fRCMQzKW1ogLvnOwoEvI+w8Ygd+0Ne/gjt7B9W1ok5ifqdtOhTjh3NwaFHSkhsFSr5VdrKOLFxiskzFHW6c99I2Bo1xnoIdOzNnT8qspnAG9CtBrJcmS9s7FH7LxzrBQonvqR1cRuT/mp5gx/FM0JGqHJFbIwocj0r3PxLGF7PrE8kzI=
+        edge: true
+        file: linux/si7020_module_rpi_2_3_3p_${TRAVIS_TAG}.tar.gz
+        on:
+          repo: vondraussen/si7020-rpi-kernel-module
+        skip_cleanup: true
