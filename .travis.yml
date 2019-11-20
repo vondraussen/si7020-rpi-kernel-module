@@ -4,8 +4,8 @@ services:
 
 install:
   - sudo apt install bison flex libssl-dev python3
-  - curl https://bootstrap.pypa.io/get-pip.py | python3.6
-  - pip3 install PyGithub
+  - curl https://bootstrap.pypa.io/get-pip.py | python3.5
+  - python3.5 -m pip install --user PyGithub
   - export TRAVIS_TAG=$(/usr/bin/python3 check_pi_kernel_update.py)
   - echo "Will use ${TRAVIS_TAG}"
   - git clone --depth 1 --branch ${TRAVIS_TAG} https://github.com/raspberrypi/linux.git
