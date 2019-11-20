@@ -2,6 +2,7 @@
 from datetime import date
 from github import Github
 import re
+import sys
 
 
 def get_tag_date(tag):
@@ -25,3 +26,4 @@ for tag in tags:
         pass
 
 print(latest_tag)
+sys.exit(0)
