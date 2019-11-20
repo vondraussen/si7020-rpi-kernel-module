@@ -27,3 +27,4 @@ deploy:
   file: linux/si7020_module_${TRAVIS_TAG}.tar.gz
   on:
     repo: vondraussen/si7020-rpi-kernel-module
+  skip_cleanup: true
