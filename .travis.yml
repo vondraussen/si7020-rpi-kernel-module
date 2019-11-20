@@ -5,7 +5,7 @@ services:
 install:
   - sudo apt install bison flex libssl-dev
   - pip install --user PyGithub
-  # - export TRAVIS_TAG=$(/usr/bin/python check_pi_kernel_update.py)
+  - export TRAVIS_TAG=$(/usr/bin/python check_pi_kernel_update.py)
   - git clone --depth 1 --branch ${TRAVIS_TAG} https://github.com/raspberrypi/linux.git
   - git clone --depth 1 https://github.com/raspberrypi/tools
   - export PATH=$PATH:$PWD/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
