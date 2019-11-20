@@ -4,11 +4,6 @@ services:
   - docker
 
 before_install:
-  - docker pull ubuntu:xenial
-  - docker run -d ubuntu /bin/bash -c "df -h; echo $(nproc);"
-  - df -h
-  - echo $(nproc)
-  - docker ps -a
   - git clone --depth 1 --branch raspberrypi-kernel_1.20190819-1 https://github.com/raspberrypi/linux.git
   - git clone --depth 1 https://github.com/raspberrypi/tools
   - export PATH=$PATH:$PWD/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
