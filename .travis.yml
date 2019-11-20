@@ -4,20 +4,27 @@ services:
   - docker
 
 before_install:
-  - git clone --depth 1 --branch raspberrypi-kernel_1.20190819-1 https://github.com/raspberrypi/linux.git
+  - export TRAVIS_TAG=raspberrypi-kernel_1.20190819-1
+  - git clone --depth 1 --branch ${TRAVIS_TAG} https://github.com/raspberrypi/linux.git
   - git clone --depth 1 https://github.com/raspberrypi/tools
   - export PATH=$PATH:$PWD/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
   - sudo apt install bison flex libssl-dev
   - cd linux && KERNEL=kernel7 make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bcm2709_defconfig
   - make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- modules_prepare
   - CONFIG_SI7020=m make -j $(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- M=drivers/iio/humidity
-  - tar czvf si7020_module_raspberrypi-kernel_1.20190819-1.tar.gz drivers/iio/humidity/si7020.ko
+  - tar czvf si7020_module_${TRAVIS_TAG}.tar.gz drivers/iio/humidity/si7020.ko
+
+before_deploy:
+  # Set up git user name and tag this commit
+  - git config --local user.name "${GIT_USER_NAME}"
+  - git config --local user.email "${GIT_USER_EMAIL}"
+  - git tag ${TRAVIS_TAG}
 
 deploy:
   provider: releases
   api_key:
     secure: "uSfioIGhFK2fyKQiXxAjDsMeRFJnh2Y+OGI5UklvZz5B/1wrGXefH+JQ6Ocg1VNlmr1+oh/mkd7UjJDdGMFgOpocZ4Hg6+FDD4HkSc3OlHekYuZT+0Dh4CKihACIt6ssHiVZ4T7umqiiyF3Z+r1aXBhx/5whnyFUETGPADMjtCn1OkikOYv3e+lmheIrwBcDn2eRfHT/5JY78MMtT24HNsBwAlPdgF2dpxU6RQ2374iF598bLs+s4vqdtKoOxUSwlQy3AHKQaCmB/1wo7JRXpjLFxOTiWAKrHwqfbeFeuBDCrIrjxoWgd3ChGDBlHmkNLSBTcVeaM0IzIhd01jyWQuTRjhVta6sVo3ldyHfoiedMYkaASysd9vL11qz8NTf5k0Yif/glNb775ELd8eBkM920Jz195ShIEP5iW1zAWH7SjiqzQpSRRFWiIQMiO5M/yOp7bDjcG2vf/LS/P0P3p4JvM8mYNwctVmjHQU9ix8DwjWn+cEz8N0YSxorPK8HZP1saT//1B3pF5FuMJtDPRYRZjxwWfgYSygsgLO+gw3xkfFrLWJfNOhNSRulr6zicQLYFVNe9/op9y4jMqGv3C2KyVgy9pq3USPS570YWwICQPzVeURvC8i5MCY/aFCUUk574/BkEjaedKYBp2Ggg9edK9WYPLgB+Xf7yOcZeg8I="
-  file: "linux/si7020_module_raspberrypi-kernel_1.20190819-1.tar.gz"
+  file: "linux/si7020_module_${TRAVIS_TAG}.tar.gz"
   skip_cleanup: true
   on:
     tags: true
