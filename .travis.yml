@@ -18,6 +18,9 @@ before_deploy:
   # Set up git user name and tag this commit
   - git config --local user.name "${GIT_USER_NAME}"
   - git config --local user.email "${GIT_USER_EMAIL}"
+  - ls -al
+  - cd ..
+  - ls -al
   - git tag ${TRAVIS_TAG}
 
 deploy:
