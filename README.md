@@ -1,4 +1,4 @@
-# SI7020 Temp Humidity Sensor Kernel Module
+# SI7020 Temp Humidity Sensor Kernel Module [![Build Status](https://travis-ci.org/vondraussen/si7020-rpi-kernel-module.svg?branch=master)](https://travis-ci.org/vondraussen/si7020-rpi-kernel-module)
 This repo will auto build the si7020.ko for the official Raspbian Kernel, as 
 soon as a new tag is released on the [official repo](https://github.com/raspberrypi/linux).
 
