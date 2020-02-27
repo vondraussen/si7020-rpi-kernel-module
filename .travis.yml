@@ -7,6 +7,7 @@ install:
   - pip install --user PyGithub
   - export LAST_MODULE_TAG=$(git tag -l --sort=creatordate | tail -n 1)
   - export TRAVIS_TAG=$(/usr/bin/python check_pi_kernel_update.py)
+  - if [[ "${TRAVIS_TAG}" == "${LAST_MODULE_TAG}" ]]; then exit; fi
   - git clone --depth 1 --branch ${TRAVIS_TAG} https://github.com/raspberrypi/linux.git
   - git clone --depth 1 https://github.com/raspberrypi/tools
   - export PATH=$PATH:$PWD/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
@@ -31,7 +32,6 @@ install:
   - cd ..
 
 before_deploy:
-  - if [[ "${TRAVIS_TAG}" == "${LAST_MODULE_TAG}" ]]; then exit; fi 
   - git config --local user.name "${GIT_USER_NAME}"
   - git config --local user.email "${GIT_USER_EMAIL}"
   - git tag ${TRAVIS_TAG}
